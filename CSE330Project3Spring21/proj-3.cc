@@ -9,6 +9,9 @@ int p = 0;
 int n = 0;
 
 int item = 0;
+sem* fullSem;
+sem* emptySem;
+sem* mutexSem;
 
 void producer(){
   P(emptySem);
@@ -28,10 +31,10 @@ void consumer(){
 int main(){
   scanf("%d,%d,%d,%d\n",&b,&p,&c,&n);
 
-  sem* fullSem = initSem(0);
-  sem* emptySem = initSem(n);
-  sem* mutexSem = initSem(1);
-  int buffer[b];
+  fullSem = initSem(0);
+  emptySem = initSem(n);
+  mutexSem = initSem(1);
 
+  extern int buffer[b];
   return 0;
 }
