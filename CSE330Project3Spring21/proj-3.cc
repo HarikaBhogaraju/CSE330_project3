@@ -15,7 +15,7 @@ sem* mutexSem;
 
 void producer(){
   P(emptySem);
-  buffer[in] = item;
+  bufferArray[in] = item;
 
   in = (in+1)%n;
   V(fullSem);
@@ -23,7 +23,7 @@ void producer(){
 
 void consumer(){
   P(fullSem);
-  item = buffer[out];
+  item = bufferArray[out];
   out = (out+1)%n;
   V(emptySem);
 }
@@ -35,6 +35,6 @@ int main(){
   emptySem = initSem(n);
   mutexSem = initSem(1);
 
-  extern int buffer[b];
+  extern int bufferArray[b];
   return 0;
 }
