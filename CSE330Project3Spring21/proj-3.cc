@@ -13,6 +13,8 @@ sem* fullSem;
 sem* emptySem;
 sem* mutexSem;
 
+int bufferArray[10000000];
+
 void producer(){
   P(emptySem);
   bufferArray[in] = item;
@@ -35,6 +37,6 @@ int main(){
   emptySem = initSem(n);
   mutexSem = initSem(1);
 
-  extern int bufferArray[b];
+
   return 0;
 }
