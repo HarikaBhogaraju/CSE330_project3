@@ -1,4 +1,5 @@
 #include "threads.h"
+#include "sem.h"
 int in = 0;
 int out = 0;
 
@@ -30,7 +31,7 @@ int main(){
   sem* mutexSem = initSem(1);
   int buffer[b];
 
-  
+
 
   int item = ;
   return 0;
