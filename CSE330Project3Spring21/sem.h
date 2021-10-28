@@ -10,11 +10,11 @@ typedef struct sem {
 } sem;
 
 sem* initSem(int val){
-  sem* semItem = (sem*)malloc(sizeof(sem));
-  semItem->value = val;
-  semItem->s_q = (q*)malloc(sizeof(q));
-  InitQueue(semItem->s_q);
-  return semItem;
+  sem* s = (sem*)malloc(sizeof(sem));
+  s->value = val;
+  s->s_q = (q*)malloc(sizeof(q));
+  InitQueue(s->s_q);
+  return s;
 }
 
 void P(sem* s){
@@ -24,9 +24,9 @@ void P(sem* s){
   else{ //part a
     //remove from readyQ and move to semQ
     struct TCB_T* tcbItem;
-    tcbItem = DeleteQueue(sem->s_q);
+    tcbItem = DeleteQueue(s->s_q);
     if(tcbItem != NULL){
-      AddQueue(sem->s_q,tcbItem);
+      AddQueue(s->s_q,tcbItem);
     }
     //then call yield
     yield();
