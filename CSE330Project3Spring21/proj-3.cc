@@ -1,4 +1,4 @@
-#include "threads.h"
+
 #include "sem.h"
 int in = 0;
 int out = 0;
