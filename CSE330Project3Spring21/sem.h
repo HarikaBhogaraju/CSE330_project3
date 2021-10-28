@@ -10,9 +10,9 @@ typedef struct sem {
 } sem;
 
 sem* initSem(int val){
-  sem* s = (sem*)malloc(sizeof(sem));
+  sem* s = (sem*)malloc(sizeof(sem);
   s->value = val;
-  s->s_q = (q*)malloc(sizeof(q));
+  s->s_q = (q*)malloc(sizeof(q);
   InitQueue(s->s_q);
   return s;
 }
