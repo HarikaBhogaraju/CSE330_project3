@@ -10,11 +10,11 @@ typedef struct sem {
 } sem;
 
 sem* initSem(int val){
-  sem* item = (sem*)malloc(sizeof(sem));
-  sem->value = val;
-  sem->s_q = (q*)malloc(sizeof(q));
-  InitQueue(sem->s_q);
-  return sem;
+  sem* semItem = (sem*)malloc(sizeof(sem));
+  semItem->value = val;
+  semItem->s_q = (q*)malloc(sizeof(q));
+  InitQueue(semItem->s_q);
+  return semItem;
 }
 
 void P(sem* s){
