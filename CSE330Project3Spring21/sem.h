@@ -29,7 +29,7 @@ void P(sem* s){
       AddQueue(s->s_q,tcbItem);
     }
     //then call yield
-    yield();
+    //yield();
   }
 }
 
