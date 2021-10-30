@@ -28,7 +28,7 @@ void P(sem* s){
     tcbItem = DeleteQueue(s->s_q);
     if(tcbItem != NULL){
       AddQueue(s->s_q,tcbItem);
-      swapcontext(&(tcb->context), &(RunQ->head->context));
+      swapcontext(&(tcbItem->context), &(RunQ->element->context));
     }
     //then call yield
     yield();
@@ -39,7 +39,7 @@ void V(sem* s){
   s->value++; //part a
   struct TCB_T* tcbItem;
   tcbItem = DeleteQueue(s->s_q);
-    if (tcb != NULL){
+    if (tcbItem != NULL){
       AddQueue(RunQ, tcbItem);
     }
 
