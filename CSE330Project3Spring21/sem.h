@@ -23,10 +23,12 @@ void P(sem* s){
   }
   else{ //part a
     //remove from readyQ and move to semQ
+    s->value--;
     struct TCB_T* tcbItem;
     tcbItem = DeleteQueue(s->s_q);
     if(tcbItem != NULL){
       AddQueue(s->s_q,tcbItem);
+      swapcontext(&(tcb->context), &(RunQ->head->context));
     }
     //then call yield
     yield();
@@ -35,5 +37,12 @@ void P(sem* s){
 
 void V(sem* s){
   s->value++; //part a
+  struct TCB_T* tcbItem;
+  tcbItem = DeleteQueue(s->s_q);
+    if (tcb != NULL){
+      AddQueue(RunQ, tcbItem);
+    }
+
+    yield();
 
 }
