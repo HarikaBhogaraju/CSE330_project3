@@ -32,7 +32,7 @@ void producer(int pid, int n){
 
 }
 
-void consumer(int cid, int n){
+void consumer(int cid, int pid, int n){
 
   while(cid < n){
     P(fullSem);
@@ -53,7 +53,6 @@ int main(){
 
   fullSem = initSem(0);
   emptySem = initSem(b);
-  mutexSem = initSem(1);
 
   run();
 
