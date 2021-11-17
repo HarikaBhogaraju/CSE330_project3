@@ -1,5 +1,6 @@
 //Harika Bhogaraju
 //1216938606
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "threads.h"
@@ -26,23 +27,23 @@ void P(sem* s){
     s->value--;
     struct TCB_T* tcbItem;
     tcbItem = DeleteQueue(s->s_q);
-    if(tcbItem != NULL){
+    if(tcbItem != NULL){ //queue is not empty
       AddQueue(s->s_q,tcbItem);
       swapcontext(&(tcbItem->context), &(RunQ->element->context));
     }
-    //then call yield
-    yield();
   }
 }
 
 void V(sem* s){
   s->value++; //part a
-  struct TCB_T* tcbItem;
-  tcbItem = DeleteQueue(s->s_q);
-    if (tcbItem != NULL){
-      AddQueue(RunQ, tcbItem);
-    }
 
-    yield();
+  if(s->value <= 0 && s->s_q != NULL){
+    struct TCB_T* tcbItem;
+    tcbItem = DeleteQueue(s->s_q);
+      if (tcbItem != NULL){
+        AddQueue(RunQ, tcbItem);
+      }
+  }
+  yield();
 
 }

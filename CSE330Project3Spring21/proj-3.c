@@ -15,30 +15,45 @@ sem* fullSem;
 sem* emptySem;
 sem* mutexSem;
 
-int bufferArray[10000000];
+int bufferArray[b];
 
 void producer(){
-  P(emptySem);
-  bufferArray[in] = item;
+  int pid = 0;
+  while(pid < n){
+    P(emptySem);
+    bufferArray[in] = item;
+    item++;
+    in = (in+1)%n;
+    V(fullSem);
+    pid++;
+  }
 
-  in = (in+1)%n;
-  V(fullSem);
 }
 
 void consumer(){
-  P(fullSem);
-  item = bufferArray[out];
-  out = (out+1)%n;
-  V(emptySem);
+  int cid = 0;
+  while(cid < n){
+    P(fullSem);
+    item = bufferArray[out];
+    out = (out+1)%n;
+    V(emptySem);
+    cid++;
+  }
+
+
 }
 
 int main(){
   scanf("%d,%d,%d,%d\n",&b,&p,&c,&n);
 
+  RunQ = (struct q*)malloc(sizeof(q));
+  InitQueue(RunQ);
+
   fullSem = initSem(0);
   emptySem = initSem(n);
   mutexSem = initSem(1);
 
+  bufferArray = malloc(b* sizeof(int));
 
   return 0;
 }
