@@ -55,7 +55,7 @@ int main(){
   emptySem = initSem(b);
   mutexSem = initSem(1);
 
-  Run();
+  run();
 
   return 0;
 }
