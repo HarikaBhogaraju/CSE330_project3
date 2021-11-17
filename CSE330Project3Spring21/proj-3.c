@@ -47,7 +47,22 @@ void consumer(int cid, int pid, int n){
 
 int main(){
   scanf("%d,%d,%d,%d\n",&b,&p,&c,&n);
-
+  int prod[p];
+  int cons[c];
+  int pi = 0;
+  int ci = 0;
+  int num = 0;
+  for(int i = 0;i < p+c; i++){
+    scanf("%d\n",&num);
+    if(num < 0){
+      prod[pi] = num;
+      pi++;
+    }
+    else{
+      cons[ci] = num;
+      ci++;
+    }
+  }
   RunQ = (struct q*)malloc(sizeof(q));
   InitQueue(RunQ);
 
