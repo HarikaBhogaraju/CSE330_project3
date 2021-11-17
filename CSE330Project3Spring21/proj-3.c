@@ -32,7 +32,7 @@ void producer(int pid, int n){
 
 }
 
-void consumer(int cid,int n){
+void consumer(int cid, int n){
 
   while(cid < n){
     P(fullSem);
