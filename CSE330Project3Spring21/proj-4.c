@@ -92,6 +92,7 @@ void Writer(int writerID){
 }
 
 int main(int argc, char const *argv[]) {
+  printf("HI\n");
   scanf("%d,%d\n",&r,&w);
   RunQ = (struct q*)malloc(sizeof(q));
   InitQueue(RunQ);
