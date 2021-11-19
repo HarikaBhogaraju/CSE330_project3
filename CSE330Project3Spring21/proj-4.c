@@ -102,12 +102,12 @@ int main(int argc, char const *argv[]) {
   for(int i = 0;i < r+w;i++){
     scanf("%d\n",&num);
     if(num > 0){
-      r = Reader(num);
-      startThread(r);
+
+      startThread(Reader(num));
     }
     else{
-      w = Writer(num);
-      startThread(w);
+
+      startThread(Writer(num));
     }
   }
 
