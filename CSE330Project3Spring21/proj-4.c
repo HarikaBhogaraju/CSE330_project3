@@ -103,11 +103,11 @@ int main(int argc, char const *argv[]) {
     scanf("%d\n",&num);
     if(num > 0){
 
-      startThread(Reader(num));
+      startThread(Reader(num),num);
     }
     else{
 
-      startThread(Writer(num));
+      startThread(Writer(num),num);
     }
   }
 
