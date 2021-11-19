@@ -23,8 +23,18 @@ void run(){
 
 void yield(){
 	ucontext_t *current, *next;
+	current = &(RunQ->element->prev->context);
+
+	RotateQ(RunQ);
+
+	next = &(RunQ->element->prev->context);
+
+	swapcontext(current, next);
+
+	/*---
+	ucontext_t *current, *next;
 	current = &(RunQ->head->context);
 	RotateQ(RunQ);
 	next = &(RunQ->head->context);
-	swapcontext(current, next);
+	swapcontext(current, next);--*/
 }
