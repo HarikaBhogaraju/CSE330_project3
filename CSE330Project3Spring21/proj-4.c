@@ -106,7 +106,7 @@ void reader(int readerID)
         exit(0);
     }
     //else swapping context
-    swapcontext(&(tcb->context), &(RunQ->element->context));
+    swapcontext(&(tcb->element->context), &(RunQ->element->context));
 }
 
 //to help print and bdetermine if consumer can consume
@@ -137,7 +137,7 @@ void writer(int writerID)
         exit(0);
     }
     //else swapping context
-    swapcontext(&(tcb->context), &(RunQ->element->context));
+    swapcontext(&(tcb->element->context), &(RunQ->element->context));
 }
 
 void readerEntry(int ID)
