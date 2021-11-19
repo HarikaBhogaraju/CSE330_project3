@@ -10,7 +10,7 @@ typedef struct TCB_T {
 	ucontext_t	context;
 } TCB_T;
 
-void init_tcb(TCB_T* tcb, void* function,void* stackp, int stack_size) {
+void init_tcb(TCB_T* tcb, void* function,int p1,void* stackp, int stack_size) {
 	memset(tcb, '\0', sizeof(TCB_T));
 	getcontext(&tcb->context);
 
@@ -18,5 +18,5 @@ void init_tcb(TCB_T* tcb, void* function,void* stackp, int stack_size) {
 	tcb->context.uc_stack.ss_sp = stackp;
 
 	tcb->context.uc_stack.ss_size = (size_t) stack_size;
-	makecontext(&tcb->context, function, 0);// context is now cooked
+	makecontext(&tcb->context, function, 1, p1);// context is now cooked
 }
