@@ -4,7 +4,7 @@
 
 struct q* RunQ;
 
-void startThread(void (*function)(int id)){
+void startThread(void (*function)(int), int id){
 	//	allocate a stack(via malloc) of a certain size(choose 8192)
 	void* stack_pointer = (void*)malloc(8192);
 	//	allocate a TCB(via malloc)
