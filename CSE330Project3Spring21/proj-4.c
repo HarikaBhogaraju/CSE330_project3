@@ -24,12 +24,12 @@ void Reader(int readerID){
 
   //reader entry
 
-  //P(mutex);
+  P(mutexSem);
   if(writersWaiting > 0 || writers > 0){
     readersWaiting++;
-    //V(mutex);
+    V(mutexSem);
     P(readerSem);
-    //P(mutex);
+    P(mutexSem);
     readersWaiting--;
   }
   readers++;
@@ -37,7 +37,7 @@ void Reader(int readerID){
     V(readerSem);
   }
   else{
-    //V(mutex);
+    V(mutexSem);
   }
 
   //printing
@@ -45,13 +45,13 @@ void Reader(int readerID){
 
 
   //reader exit
-  //P(mutex);
+  P(mutexSem);
   readers--;
   if(readers == 0 && writersWaiting > 0){
     V(writerSem);
   }
   else{
-    //V(mutex);
+    V(mutexSem);
   }
 
   printf("\n This is the %d th reader reading value i = %d for the second time \n", readerID, i );
@@ -59,22 +59,22 @@ void Reader(int readerID){
 void Writer(int writerID){
   i++;
   //writer entry
-  //P(mutex);
+  P(mutexSem);
   if(readers > 0 || writers > 0){
     writersWaiting++;
-    //V(mutex);
+    V(mutexSem);
     P(writerSem);
     writersWaiting--;
   }
   writersWaiting++;
-  //V(mutex);
+  V(mutexSem);
 
   //printing
   printf("\n This is the %d th writer writing value i = %d \n", -writerID, i );
 
 
   //writer exit
-  //P(mutex);
+  P(mutexSem);
   writers--;
   if(readersWaiting > 0){
     for(int i = 1;i<readersWaiting;i++){
@@ -85,14 +85,14 @@ void Writer(int writerID){
     V(writerSem);
   }
   else{
-    //V(mutex);
+    V(mutexSem);
   }
   printf("\n This is the %d th writer verifying value i = %d \n", writerID, i );
 
 }
 
 int main(int argc, char const *argv[]) {
-  printf("HI\n");
+
   scanf("%d,%d\n",&r,&w);
   RunQ = (struct q*)malloc(sizeof(q));
   InitQueue(RunQ);
