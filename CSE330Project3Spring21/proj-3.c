@@ -10,6 +10,8 @@ int c = 0;
 int p = 0;
 int n = 0;
 
+int pad = 0; //scratch pad value for readers and writers
+
 int item = 0;
 sem* fullSem; //consumer
 sem* emptySem; //producer

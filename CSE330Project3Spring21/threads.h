@@ -4,13 +4,13 @@
 
 struct q* RunQ;
 
-void startThread(void (*function)(int,int),int p1,int p2){
+void startThread(void (*function)){
 	//	allocate a stack(via malloc) of a certain size(choose 8192)
 	void* stack_pointer = (void*)malloc(8192);
 	//	allocate a TCB(via malloc)
 	TCB_T* tcb = (TCB_T*)malloc(sizeof(TCB_T));
 	//	call init_TCB with appropriate arguments
-	init_tcb(tcb, function, stack_pointer, p1, p2, 8192);
+	init_tcb(tcb, function, stack_pointer,8192);
 	//	call addQ to add this TCB into the "RunQ" which is a global element pointer
 	AddQueue(RunQ, tcb);
 }
@@ -22,8 +22,9 @@ void run(){
 }
 
 void yield(){
-	ucontext_t prev;
-	getcontext(&prev);
+	ucontext_t *current, *next;
+	current = &(RunQ->head->context);
 	RotateQ(RunQ);
-	swapcontext(&(RunQ->element->prev->context), &(RunQ->element->context));
+	next = &(RunQ->head->context);
+	swapcontext(current, next);
 }

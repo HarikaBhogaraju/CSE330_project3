@@ -24,26 +24,32 @@ void P(sem* s){
   }
   else{ //part a
     //remove from readyQ and move to semQ
-    s->value--;
-    struct TCB_T* tcbItem;
-    tcbItem = DeleteQueue(s->s_q);
-    if(tcbItem != NULL){ //queue is not empty
-      AddQueue(s->s_q,tcbItem);
-      swapcontext(&(tcbItem->context), &(RunQ->element->context));
+    if(s->value < 0){
+      struct TCB_T* tcbItem;
+      tcbItem = DeleteQueue(s->s_q);
+      if(tcbItem != NULL){ //queue is not empty
+        AddQueue(s->s_q,tcbItem);
+        swapcontext(&(tcbItem->context), &(RunQ->element->context));
+
+      }
+      s->value--;
     }
   }
 }
 
 void V(sem* s){
-  s->value++; //part a
 
-  if(s->value <= 0 && s->s_q != NULL){
+  if(s->value <= 0){
     struct TCB_T* tcbItem;
     tcbItem = DeleteQueue(s->s_q);
       if (tcbItem != NULL){
         AddQueue(RunQ, tcbItem);
       }
   }
+
+  s->value++;
+
   yield();
+  sleep(1);
 
 }
