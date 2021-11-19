@@ -32,7 +32,7 @@ typedef struct semaphore
 void initSem(semaphore *sem, int value)
 {
     sem->qOfTCBs = (struct q*) malloc(sizeof(struct q));
-    initQueue(sem->qOfTCBs);
+    InitQueue(sem->qOfTCBs);
     sem->value = value;
 }
 
@@ -52,18 +52,18 @@ void P(semaphore *sem)
         }
         else
         {
-            //delete tcb from readyQ
-            tcb = delQueue(ReadyQ);
+            //delete tcb from RunQ
+            tcb = DeleteQueue(RunQ);
             //add to semaphore queue
-            addQueue(sem->qOfTCBs, tcb);
+            AddQueue(sem->qOfTCBs, tcb);
 
             //if element NULL exit
-            if(ReadyQ->element == NULL)
+            if(RunQ->element == NULL)
             {
                 exit(0);
             }
             //swap current node with previous nodes
-            swapcontext(&(sem->qOfTCBs->element->prev->context), &(ReadyQ->element->context));
+            swapcontext(&(sem->qOfTCBs->element->prev->context), &(RunQ->element->context));
         }
     }
 }
@@ -78,9 +78,9 @@ void V(semaphore *sem)
 	//checking if any threads are waiting in semaphore queue
     if(sem->qOfTCBs->element != NULL)
     {
-    	//if yes delete from semaphore queue and add to readyQ
-        tcb = delQueue(sem->qOfTCBs);
-        addQueue(ReadyQ, tcb);
+    	//if yes delete from semaphore queue and add to RunQ
+        tcb = DeleteQueue(sem->qOfTCBs);
+        AddQueue(RunQ, tcb);
     }
 }
 
@@ -97,16 +97,16 @@ void reader(int readerID)
 
 	readerExit(readerID);
 
-	//deleting the thread if from readyQ
-    struct TCB_t *tcb = delQueue(ReadyQ);
+	//deleting the thread if from RunQ
+    struct TCB_t *tcb = DeleteQueue(RunQ);
 
 	//if element Null exit
-    if(ReadyQ->element == NULL)
+    if(RunQ->element == NULL)
     {
         exit(0);
     }
     //else swapping context
-    swapcontext(&(tcb->context), &(ReadyQ->element->context));
+    swapcontext(&(tcb->context), &(RunQ->element->context));
 }
 
 //to help print and bdetermine if consumer can consume
@@ -128,16 +128,16 @@ void writer(int writerID)
 
 	writerExit(writerID);
 
-    //deleting the thread if from readyQ
-    struct TCB_t *tcb = delQueue(ReadyQ);
+    //deleting the thread if from RunQ
+    struct TCB_t *tcb = DeleteQueue(RunQ);
 
 	//if element Null exit
-    if(ReadyQ->element == NULL)
+    if(RunQ->element == NULL)
     {
         exit(0);
     }
     //else swapping context
-    swapcontext(&(tcb->context), &(ReadyQ->element->context));
+    swapcontext(&(tcb->context), &(RunQ->element->context));
 }
 
 void readerEntry(int ID)
@@ -196,21 +196,21 @@ int main() {
 	//taking inputs
 	scanf("%d,%d",&numberOfReaders, &numberOfWriters);
 
-	//allocating memory for readyQ
-    ReadyQ = (struct q*) malloc(sizeof(struct q));
+	//allocating memory for RunQ
+    RunQ = (struct q*) malloc(sizeof(struct q));
     //Semaphore for Consumer
     forReader = (struct semaphore*) malloc(sizeof(struct semaphore));
     //Semaphore for producer
     forWriter = (struct semaphore*) malloc(sizeof(struct semaphore));
 
-	//initializing ReadyQ
-    initQueue(ReadyQ);
+	//initializing RunQ
+    InitQueue(RunQ);
     //initializing consumer and producer semaphore
     initSem(forReader, 0);
     initSem(forWriter, 0);
 
 	int j = 0;
-	//for running till the threads in readyQ
+	//for running till the threads in RunQ
     int stop = numberOfReaders + numberOfWriters;
     while(j < stop)
     {
