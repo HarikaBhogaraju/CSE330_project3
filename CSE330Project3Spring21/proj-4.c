@@ -51,7 +51,7 @@ void Reader(int readerID){
     V(writerSem);
   }
   else{
-    V(mutex);
+    //V(mutex);
   }
 
   printf("\n This is the %d th reader reading value i = %d for the second time \n", readerID, i );
@@ -59,22 +59,22 @@ void Reader(int readerID){
 void Writer(int writerID){
   i++;
   //writer entry
-  P(mutex);
+  //P(mutex);
   if(readers > 0 || writers > 0){
     writersWaiting++;
-    V(mutex);
+    //V(mutex);
     P(writerSem);
     writersWaiting--;
   }
   writersWaiting++;
-  V(mutex);
+  //V(mutex);
 
   //printing
   printf("\n This is the %d th writer writing value i = %d \n", -writerID, i );
 
 
   //writer exit
-  P(mutex);
+  //P(mutex);
   writers--;
   if(readersWaiting > 0){
     for(int i = 1;i<readersWaiting;i++){
@@ -85,7 +85,7 @@ void Writer(int writerID){
     V(writerSem);
   }
   else{
-    V(mutex);
+    //V(mutex);
   }
   printf("\n This is the %d th writer verifying value i = %d \n", writerID, i );
 
@@ -102,11 +102,11 @@ int main(int argc, char const *argv[]) {
   for(int i = 0;i < r+w;i++){
     scanf("%d\n",&num);
     if(num > 0){
-      r = reader(num);
+      r = Reader(num);
       startThread(r);
     }
     else{
-      w = writer(num);
+      w = Writer(num);
       startThread(w);
     }
   }
