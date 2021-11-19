@@ -5,7 +5,7 @@
 
 sem* readerSem; //reader
 sem* writerSem; //writer
-sem* mutexSem;
+//sem* mutexSem;
 
 int i = 0; //global variable
 
@@ -16,7 +16,6 @@ int w = 0;
 
 int readers = 0;
 int writers = 0;
-
 int readersWaiting = 0;
 int writersWaiting = 0;
 
@@ -24,57 +23,61 @@ void Reader(int readerID){
 
   //reader entry
 
-  P(mutexSem);
+  //P(mutexSem);
   if(writersWaiting > 0 || writers > 0){
     readersWaiting++;
-    V(mutexSem);
+    //V(mutexSem);
     P(readerSem);
-    P(mutexSem);
+    //P(mutexSem);
     readersWaiting--;
   }
   readers++;
   if(readersWaiting > 0){
     V(readerSem);
   }
-  else{
-    V(mutexSem);
-  }
+
 
   //printing
   printf("\n This is the %d th reader reading value i = %d for the first time \n", readerID, i );
 
+  yield();
+
+  printf("\n This is the %d th reader reading value i = %d for the second time \n", readerID, i );
 
   //reader exit
-  P(mutexSem);
+  //P(mutexSem);
   readers--;
   if(readers == 0 && writersWaiting > 0){
     V(writerSem);
   }
-  else{
-    V(mutexSem);
-  }
 
-  printf("\n This is the %d th reader reading value i = %d for the second time \n", readerID, i );
+
 }
 void Writer(int writerID){
+  int x = 0;
+
   i++;
   //writer entry
-  P(mutexSem);
-  if(readers > 0 || writers > 0){
+  //P(mutexSem);
+  if(readers > 0 || writers > 0 || readersWaiting > 0 || writersWaiting > 0){
     writersWaiting++;
-    V(mutexSem);
+    //V(mutexSem);
     P(writerSem);
     writersWaiting--;
   }
-  writersWaiting++;
-  V(mutexSem);
+  writers++;
+  //V(mutexSem);
 
+  i = -writerID;
+  x = -writerID;
   //printing
   printf("\n This is the %d th writer writing value i = %d \n", -writerID, i );
 
-
+  if((-writerID) == x){
+    printf("\n This is the %d th writer verifying value i = %d \n", -writerID, i );
+  }
   //writer exit
-  P(mutexSem);
+  //P(mutexSem);
   writers--;
   if(readersWaiting > 0){
     for(int i = 1;i<readersWaiting;i++){
@@ -84,10 +87,13 @@ void Writer(int writerID){
   else if(writersWaiting > 0){
     V(writerSem);
   }
-  else{
-    V(mutexSem);
+
+  struct TCB_T* tcbItem;
+  tcbItem = DeleteQueue(RunQ);
+  if(RunQ->element == NULL){
+    exit(0);
   }
-  printf("\n This is the %d th writer verifying value i = %d \n", writerID, i );
+  swapcontext(&(tcbItem->context), &(RunQ->element->context));
 
 }
 
@@ -98,21 +104,17 @@ int main(int argc, char const *argv[]) {
   InitQueue(RunQ);
   readerSem = initSem(0);
   writerSem = initSem(0);
-  mutexSem = initSem(1);
+  //mutexSem = initSem(1);
 
-  for(int i = 0;i < r+w;i++){
+  for(int j = 0;j < r+w;j++){
     scanf("%d\n",&num);
     if(num > 0){
-
-      startThread(Reader,num);
+      startThread(&Reader,num);
     }
     else{
-
-      startThread(Writer,num);
+      startThread(&Writer,num);
     }
   }
-
-
-
+  run();
   return 0;
 }
