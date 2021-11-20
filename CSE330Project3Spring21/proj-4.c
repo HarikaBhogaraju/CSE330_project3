@@ -192,7 +192,7 @@ void reader(int readerID)
 	readerExit(readerID);
 
 	//deleting the thread if from RunQ
-    struct TCB_t *tcbItem = DeleteQueue(RunQ);
+    struct TCB_T *tcbItem = DeleteQueue(RunQ);
 
 	//if element Null exit
     if(RunQ->element == NULL)
@@ -223,7 +223,7 @@ void writer(int writerID)
 	writerExit(writerID);
 
     //deleting the thread if from RunQ
-    struct TCB_t *tcbItem = DeleteQueue(RunQ);
+    struct TCB_T *tcbItem = DeleteQueue(RunQ);
 
 	//if element Null exit
     if(RunQ->element == NULL)
