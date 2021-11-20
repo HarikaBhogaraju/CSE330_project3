@@ -73,7 +73,7 @@ void initSem(semaphore *sem, int value)
 //P semaphore
 void P(semaphore *sem)
 {
-    struct TCB_t *tcb;
+    struct TCB_T *tcb;
 	//checks for all Ids
     while(1)
     {
@@ -87,17 +87,17 @@ void P(semaphore *sem)
         else
         {
             //delete tcb from readyQ
-            tcb = delQueue(ReadyQ);
+            tcb = DeleteQueue(RunQ);
             //add to semaphore queue
-            addQueue(sem->qOfTCBs, tcb);
+            AddQueue(sem->qOfTCBs, tcb);
 
-            //if head NULL exit
-            if(ReadyQ->head == NULL)
+            //if element NULL exit
+            if(RunQ->element == NULL)
             {
                 exit(0);
             }
             //swap current node with previous nodes
-            swapcontext(&(sem->qOfTCBs->head->prev->context), &(ReadyQ->head->context));
+            swapcontext(&(sem->qOfTCBs->element->prev->context), &(RunQ->element->context));
         }
     }
 }
@@ -105,15 +105,15 @@ void P(semaphore *sem)
 //V semaphore
 void V(semaphore *sem)
 {
-    struct TCB_t *tcb;
+    struct TCB_T *tcb;
     //incrementing the value
     sem->value++;
 
 	//checking if any threads are waiting in semaphore queue
-    if(sem->qOfTCBs->head != NULL)
+    if(sem->qOfTCBs->element != NULL)
     {
     	//if yes delete from semaphore queue and add to readyQ
-        tcb = delQueue(sem->qOfTCBs);
-        addQueue(ReadyQ, tcb);
+        tcb = DeleteQueue(sem->qOfTCBs);
+        AddQueue(RunQ, tcb);
     }
 }
