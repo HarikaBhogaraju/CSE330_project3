@@ -19,6 +19,7 @@ int readersWaiting = 0; //rwc
 int writersWaiting = 0; //wwc
 
 void readerEnrty(){
+  printf("reader entry called\n");
   //reader entry
 
   //P(mutexSem);
@@ -35,6 +36,7 @@ void readerEnrty(){
   }
 }
 void readerExit(){
+  printf("reader exit called\n");
   readers--;
   if(readers == 0 && writersWaiting > 0){
     V(writerSem);
@@ -42,7 +44,7 @@ void readerExit(){
 }
 void Reader(int readerID){
 
-
+  printf("reader called\n");
   readerEnrty();
 
   //printing
@@ -65,6 +67,7 @@ void Reader(int readerID){
 
 }
 void writerEntry(){
+  printf("writer entry called\n");
   //P(mutexSem);
   if(readers > 0 || writers > 0 || readersWaiting > 0 || writersWaiting > 0){
     writersWaiting++;
@@ -75,6 +78,7 @@ void writerEntry(){
   writers++;
 }
 void writerExit(){
+  printf("writer exit called\n");
   //P(mutexSem);
   writers--;
   if(readersWaiting > 0){
@@ -88,6 +92,7 @@ void writerExit(){
 
 }
 void Writer(int writerID){
+  printf("writer called\n");
   int x = 0;
 
   //writer entry
