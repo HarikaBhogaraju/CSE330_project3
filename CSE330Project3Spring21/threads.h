@@ -10,7 +10,7 @@ void startThread(void (*function)(int), int id){
 	//	allocate a TCB(via malloc)
 	TCB_T* tcb = (TCB_T*)malloc(sizeof(TCB_T));
 	//	call init_TCB with appropriate arguments
-	init_tcb(tcb, function, id, stack_pointer,8192);
+	init_tcb(tcb, function, stack_pointer, 8192, id);
 	//	call addQ to add this TCB into the "RunQ" which is a global element pointer
 	AddQueue(RunQ, tcb);
 }

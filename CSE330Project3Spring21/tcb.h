@@ -10,7 +10,7 @@ typedef struct TCB_T {
 	ucontext_t	context;
 } TCB_T;
 
-void init_tcb(TCB_T* tcb, void* function,int p1,void* stackp, int stack_size) {
+void init_tcb(TCB_T* tcb, void* function, void* stackp, int stack_size, int p1) {
 	memset(tcb, '\0', sizeof(TCB_T));
 	getcontext(&tcb->context);
 

@@ -22,11 +22,10 @@ void P(sem* s){
 while(1){
   if(s->value > 0){ //part b
     s->value--;
-    break;
+    return;
   }
   else{ //part a
     //remove from readyQ and move to semQ
-
       struct TCB_T* tcbItem;
       tcbItem = DeleteQueue(s->s_q);
       if(tcbItem != NULL){ //queue is not empty
@@ -48,8 +47,5 @@ void V(sem* s){
   }
 
   s->value++;
-
-  yield();
-  sleep(1);
 
 }
