@@ -1,11 +1,11 @@
-/*---- #include <stdio.h>
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "sem.h"
 
-sem* readerSem; //reader
-sem* writerSem; //writer
-//sem* mutexSem;
+semaphore* readerSem; //reader
+semaphore* writerSem; //writer
+//semaphore* mutexSem;
 
 int i = 0; //global variable
 
@@ -129,9 +129,9 @@ int main(int argc, char const *argv[]) {
   RunQ = (struct q*)malloc(sizeof(q));
   InitQueue(RunQ);
 
-  readerSem = (struct sem*) malloc(sizeof(struct sem));
+  readerSem = (struct semaphore*) malloc(sizeof(struct semaphore));
   initSem(readerSem,0);
-  writerSem = (struct sem*) malloc(sizeof(struct sem));
+  writerSem = (struct semaphore*) malloc(sizeof(struct semaphore));
   initSem(writerSem, 0);
   //mutexSem = initSem(1);
 
@@ -147,10 +147,10 @@ int main(int argc, char const *argv[]) {
   }
   run();
   return 0;
-} --*/
+}
 
 
-
+/*-----
 //Yash shelar
 //yshelar@asu.edu
 //ASU ID: 1217410363
@@ -159,7 +159,7 @@ int main(int argc, char const *argv[]) {
 #include<stdio.h>
 #include<stdlib.h>
 //including threads.h to change access or make queue of TCBs
-#include "sem.h"
+#include "semaphore.h"
 
 
 //global variables to help
@@ -174,9 +174,9 @@ int writerWaitCount = 0;
 int numberOfReaders = 0;
 int numberOfWriters = 0;
 
-//both structs to call sems
-struct sem *forReader;
-struct sem *forWriter;
+//both structs to call semaphores
+struct semaphore *forReader;
+struct semaphore *forWriter;
 
 //to help print and determine if producer should produce or wait
 void reader(int readerID)
@@ -292,14 +292,14 @@ int main() {
 
 	//allocating memory for RunQ
     RunQ = (struct q*) malloc(sizeof(struct q));
-    //sem for Consumer
-    forReader = (struct sem*) malloc(sizeof(struct sem));
-    //sem for producer
-    forWriter = (struct sem*) malloc(sizeof(struct sem));
+    //semaphore for Consumer
+    forReader = (struct semaphore*) malloc(sizeof(struct semaphore));
+    //semaphore for producer
+    forWriter = (struct semaphore*) malloc(sizeof(struct semaphore));
 
 	//initializing RunQ
     InitQueue(RunQ);
-    //initializing consumer and producer sem
+    //initializing consumer and producer semaphore
     initSem(forReader, 0);
     initSem(forWriter, 0);
 
@@ -330,3 +330,4 @@ int main() {
 
 	return 0;
 }
+--*/

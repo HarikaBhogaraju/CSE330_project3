@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "threads.h"
-
+/*---
 typedef struct sem {
   int value;
   struct q* s_q; //queue of the sem
@@ -52,4 +52,68 @@ void V(sem* s){
 
 
 
+}
+-----*/
+
+//struct type for semaphore data structure
+typedef struct semaphore
+{
+    int value;
+    struct q *qOfTCBs;
+} semaphore;
+
+//to initialize semaphores with given value
+void initSem(semaphore *sem, int value)
+{
+    sem->qOfTCBs = (struct q*) malloc(sizeof(struct q));
+    initQueue(sem->qOfTCBs);
+    sem->value = value;
+}
+
+//P semaphore
+void P(semaphore *sem)
+{
+    struct TCB_t *tcb;
+	//checks for all Ids
+    while(1)
+    {
+    	//if there is space in the critical section
+        if(sem->value > 0)
+        {
+        	//decrements accordingly
+            sem->value--;
+            return;
+        }
+        else
+        {
+            //delete tcb from readyQ
+            tcb = delQueue(ReadyQ);
+            //add to semaphore queue
+            addQueue(sem->qOfTCBs, tcb);
+
+            //if head NULL exit
+            if(ReadyQ->head == NULL)
+            {
+                exit(0);
+            }
+            //swap current node with previous nodes
+            swapcontext(&(sem->qOfTCBs->head->prev->context), &(ReadyQ->head->context));
+        }
+    }
+}
+
+//V semaphore
+void V(semaphore *sem)
+{
+    struct TCB_t *tcb;
+    //incrementing the value
+    sem->value++;
+
+	//checking if any threads are waiting in semaphore queue
+    if(sem->qOfTCBs->head != NULL)
+    {
+    	//if yes delete from semaphore queue and add to readyQ
+        tcb = delQueue(sem->qOfTCBs);
+        addQueue(ReadyQ, tcb);
+    }
 }
