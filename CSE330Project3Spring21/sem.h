@@ -28,10 +28,13 @@ void P(sem* s){
       //remove from readyQ and move to semQ
         struct TCB_T* tcbItem;
         tcbItem = DeleteQueue(RunQ);
-        if(tcbItem != NULL){ //queue is not empty
+        //if(tcbItem != NULL){ //queue is not empty
           AddQueue(s->s_q,tcbItem);
+          if(RunQ->element == NULL){
+            exit(0);
+          }
           swapcontext(&(s->s_q->element->prev->context), &(RunQ->element->context));
-        }
+        //}
     }
   }
 }
