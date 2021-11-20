@@ -159,7 +159,8 @@ int main(int argc, char const *argv[]) {
 #include<stdio.h>
 #include<stdlib.h>
 //including threads.h to change access or make queue of TCBs
-#include "threads.h"
+#include "sem.h"
+
 
 //global variables to help
 
@@ -191,7 +192,7 @@ void reader(int readerID)
 	readerExit(readerID);
 
 	//deleting the thread if from RunQ
-    struct TCB_t *tcb = DeleteQueue(RunQ);
+    struct TCB_t *tcbItem = DeleteQueue(RunQ);
 
 	//if element Null exit
     if(RunQ->element == NULL)
@@ -199,7 +200,7 @@ void reader(int readerID)
         exit(0);
     }
     //else swapping context
-    swapcontext(&(tcb->context), &(RunQ->element->context));
+    swapcontext(&(tcbItem->context), &(RunQ->element->context));
 }
 
 //to help print and bdetermine if consumer can consume
@@ -222,7 +223,7 @@ void writer(int writerID)
 	writerExit(writerID);
 
     //deleting the thread if from RunQ
-    struct TCB_t *tcb = DeleteQueue(RunQ);
+    struct TCB_t *tcbItem = DeleteQueue(RunQ);
 
 	//if element Null exit
     if(RunQ->element == NULL)
@@ -230,7 +231,7 @@ void writer(int writerID)
         exit(0);
     }
     //else swapping context
-    swapcontext(&(tcb->context), &(RunQ->element->context));
+    swapcontext(&(tcbItem->context), &(RunQ->element->context));
 }
 
 void readerEntry(int ID)
