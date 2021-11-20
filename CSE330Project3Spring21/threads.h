@@ -23,6 +23,7 @@ void run(){
 
 void yield(){
 	ucontext_t *current, *next;
+	
 	current = &(RunQ->element->prev->context);
 
 	RotateQ(RunQ);

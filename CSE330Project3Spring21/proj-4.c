@@ -10,7 +10,6 @@ sem* writerSem; //writer
 int i = 0; //global variable
 
 int num = 0;
-
 int r = 0;
 int w = 0;
 
@@ -101,6 +100,7 @@ void Writer(int writerID){
   printf("\n This is the %d th writer writing value i = %d \n", -writerID, i );
 
   yield();
+
   if(i == x){
     printf("\n This is the %d th writer verifying value i = %d \n", -writerID, i );
   }
@@ -128,12 +128,12 @@ int main(int argc, char const *argv[]) {
 
   for(int j = 0;j < (r+w);j++){
     scanf("%d",&num);
-    printf("Num = %d\n",num);
+    //printf("Num = %d\n",num);
     if(num > 0){
-      //startThread(&Reader,num);
+      startThread(&Reader,num);
     }
     else{
-      //startThread(&Writer,num);
+      startThread(&Writer,num);
     }
   }
   run();

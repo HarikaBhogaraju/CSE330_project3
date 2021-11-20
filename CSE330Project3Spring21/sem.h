@@ -7,7 +7,7 @@
 
 typedef struct sem {
   int value;
-  struct q* s_q;
+  struct q* s_q; //queue of the sem
 } sem;
 
 sem* initSem(int val){
@@ -37,15 +37,16 @@ while(1){
 }
 
 void V(sem* s){
+  s->value++;
 
-  if(s->value <= 0){
+  if(s->s_q->element != NULL){
     struct TCB_T* tcbItem;
     tcbItem = DeleteQueue(s->s_q);
-      if (tcbItem != NULL){
+      //if (tcbItem != NULL){
         AddQueue(RunQ, tcbItem);
-      }
+      //}
   }
 
-  s->value++;
+
 
 }
