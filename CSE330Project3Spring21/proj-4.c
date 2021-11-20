@@ -128,8 +128,11 @@ int main(int argc, char const *argv[]) {
   scanf("%d,%d",&r,&w);
   RunQ = (struct q*)malloc(sizeof(q));
   InitQueue(RunQ);
-  readerSem = initSem(0);
-  writerSem = initSem(0);
+
+  readerSem = (struct sem*) malloc(sizeof(struct sem));
+  initSem(readerSem,0);
+  writerSem = (struct sem*) malloc(sizeof(struct sem));
+  initSem(writerSem, 0);
   //mutexSem = initSem(1);
 
   for(int j = 0;j < (r+w);j++){

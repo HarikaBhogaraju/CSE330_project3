@@ -10,12 +10,12 @@ typedef struct sem {
   struct q* s_q; //queue of the sem
 } sem;
 
-sem* initSem(int val){
-  sem* s = (struct sem*)malloc(sizeof(sem));
+void initSem(sem* s, int val){
+  //sem* s = (struct sem*)malloc(sizeof(sem));
   s->value = val;
   s->s_q = (struct q*)malloc(sizeof(q));
   InitQueue(s->s_q);
-  return s;
+
 }
 
 void P(sem* s){
