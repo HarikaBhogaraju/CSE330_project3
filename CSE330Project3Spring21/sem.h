@@ -66,7 +66,7 @@ typedef struct semaphore
 void initSem(semaphore *sem, int value)
 {
     sem->qOfTCBs = (struct q*) malloc(sizeof(struct q));
-    initQueue(sem->qOfTCBs);
+    InitQueue(sem->qOfTCBs);
     sem->value = value;
 }
 
