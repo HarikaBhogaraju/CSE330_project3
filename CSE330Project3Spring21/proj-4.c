@@ -76,6 +76,7 @@ void writerEntry(){
     writersWaiting--;
   }
   writers++;
+  printf("writer entry done\n");
 }
 void writerExit(){
   printf("writer exit called\n");
