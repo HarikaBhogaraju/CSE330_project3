@@ -19,21 +19,21 @@ sem* initSem(int val){
 }
 
 void P(sem* s){
-while(1){
-  if(s->value > 0){ //part b
-    s->value--;
-    return;
+  while(1){
+    if(s->value > 0){ //part b
+      s->value--;
+      return;
+    }
+    else{ //part a
+      //remove from readyQ and move to semQ
+        struct TCB_T* tcbItem;
+        tcbItem = DeleteQueue(RunQ);
+        if(tcbItem != NULL){ //queue is not empty
+          AddQueue(s->s_q,tcbItem);
+          swapcontext(&(s->s_q->element->prev->context), &(RunQ->element->context));
+        }
+    }
   }
-  else{ //part a
-    //remove from readyQ and move to semQ
-      struct TCB_T* tcbItem;
-      tcbItem = DeleteQueue(s->s_q);
-      if(tcbItem != NULL){ //queue is not empty
-        AddQueue(s->s_q,tcbItem);
-        swapcontext(&(s->s_q->element->prev->context), &(RunQ->element->context));
-      }
-  }
-}
 }
 
 void V(sem* s){
