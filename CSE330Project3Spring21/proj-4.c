@@ -1,4 +1,4 @@
-#include <stdio.h>
+/*---- #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "sem.h"
@@ -147,4 +147,185 @@ int main(int argc, char const *argv[]) {
   }
   run();
   return 0;
+} --*/
+
+
+
+//Yash shelar
+//yshelar@asu.edu
+//ASU ID: 1217410363
+
+//including standard libraries
+#include<stdio.h>
+#include<stdlib.h>
+//including threads.h to change access or make queue of TCBs
+#include "threads.h"
+
+//global variables to help
+
+int i = 0;
+
+int readCount = 0;
+int writeCount = 0;
+int readerWaitCount = 0;
+int writerWaitCount = 0;
+
+int numberOfReaders = 0;
+int numberOfWriters = 0;
+
+//both structs to call sems
+struct sem *forReader;
+struct sem *forWriter;
+
+//to help print and determine if producer should produce or wait
+void reader(int readerID)
+{
+
+	readerEntry(readerID);
+
+	printf("\n This is the %d th reader reading value i = %d for the first time \n", readerID, i);
+	yield();
+
+	printf("\n This is the %d th reader reading value i = %d for the second time \n", readerID, i);
+
+	readerExit(readerID);
+
+	//deleting the thread if from RunQ
+    struct TCB_t *tcb = DeleteQueue(RunQ);
+
+	//if element Null exit
+    if(RunQ->element == NULL)
+    {
+        exit(0);
+    }
+    //else swapping context
+    swapcontext(&(tcb->context), &(RunQ->element->context));
+}
+
+//to help print and bdetermine if consumer can consume
+void writer(int writerID)
+{
+	int help = 0;
+
+	writerEntry(writerID);
+	i = -writerID;
+	help = -writerID;
+
+	printf("\n This is the %d th writer writing value i = %d \n", -writerID, i);
+	yield();
+
+	if((-writerID) == help)
+	{
+		printf("\n This is the %d th writer verifying value i = %d \n", -writerID, i);
+	}
+
+	writerExit(writerID);
+
+    //deleting the thread if from RunQ
+    struct TCB_t *tcb = DeleteQueue(RunQ);
+
+	//if element Null exit
+    if(RunQ->element == NULL)
+    {
+        exit(0);
+    }
+    //else swapping context
+    swapcontext(&(tcb->context), &(RunQ->element->context));
+}
+
+void readerEntry(int ID)
+{
+	if(writerWaitCount > 0 || writeCount > 0)
+	{
+		readerWaitCount++;
+		P(forReader);
+		readerWaitCount--;
+	}
+	readCount++;
+	if(readerWaitCount > 0)
+	{
+		V(forReader);
+	}
+}
+
+void readerExit(int ID)
+{
+	readCount--;
+	if(readCount == 0 && writerWaitCount > 0)
+	{
+		V(forWriter);
+	}
+}
+
+void writerEntry(int ID)
+{
+	if(readCount > 0 || writeCount > 0 || readerWaitCount > 0 || writerWaitCount > 0)
+	{
+		writerWaitCount++;
+		P(forWriter);
+		writerWaitCount--;
+	}
+	writeCount++;
+}
+
+void writerExit(int ID)
+{
+	writeCount--;
+	if(readerWaitCount > 0)
+	{
+		for(int k = 0; k < readerWaitCount; k++)
+		{
+			V(forReader);
+		}
+	}
+	else if(writerWaitCount > 0)
+	{
+		V(forWriter);
+	}
+}
+
+//main function
+int main() {
+	//taking inputs
+	scanf("%d,%d",&numberOfReaders, &numberOfWriters);
+
+	//allocating memory for RunQ
+    RunQ = (struct q*) malloc(sizeof(struct q));
+    //sem for Consumer
+    forReader = (struct sem*) malloc(sizeof(struct sem));
+    //sem for producer
+    forWriter = (struct sem*) malloc(sizeof(struct sem));
+
+	//initializing RunQ
+    initQueue(RunQ);
+    //initializing consumer and producer sem
+    initSem(forReader, 0);
+    initSem(forWriter, 0);
+
+	int j = 0;
+	//for running till the threads in RunQ
+    int stop = numberOfReaders + numberOfWriters;
+    while(j < stop)
+    {
+    	//scanning the thread id
+    	int id;
+    	scanf("%d", &id);
+
+    	//if positive
+       	if(id > 0)
+        {
+        	//call producer
+            start_thread(&reader, id);
+        }
+        else
+        {
+        	//call consumer
+            start_thread(&writer, id);
+        }
+        //incrementing
+        j++;
+    }
+    run();
+
+	return 0;
 }
