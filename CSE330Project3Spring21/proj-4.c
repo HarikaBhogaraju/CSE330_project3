@@ -298,7 +298,7 @@ int main() {
     forWriter = (struct sem*) malloc(sizeof(struct sem));
 
 	//initializing RunQ
-    initQueue(RunQ);
+    InitQueue(RunQ);
     //initializing consumer and producer sem
     initSem(forReader, 0);
     initSem(forWriter, 0);
@@ -316,12 +316,12 @@ int main() {
        	if(id > 0)
         {
         	//call producer
-            start_thread(&reader, id);
+            startThread(&reader, id);
         }
         else
         {
         	//call consumer
-            start_thread(&writer, id);
+            startThread(&writer, id);
         }
         //incrementing
         j++;
