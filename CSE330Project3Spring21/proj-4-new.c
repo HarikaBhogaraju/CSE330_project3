@@ -32,7 +32,7 @@ typedef struct semaphore
 void initSem(semaphore *sem, int value)
 {
     sem->qOfTCBs = (struct q*) malloc(sizeof(struct q));
-    initQueue(sem->qOfTCBs);
+    InitQueue(sem->qOfTCBs);
     sem->value = value;
 }
 
@@ -204,7 +204,7 @@ int main() {
     forWriter = (struct semaphore*) malloc(sizeof(struct semaphore));
 
 	//initializing RunQ
-    initQueue(RunQ);
+    InitQueue(RunQ);
     //initializing consumer and producer semaphore
     initSem(forReader, 0);
     initSem(forWriter, 0);
