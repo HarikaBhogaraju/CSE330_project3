@@ -12,7 +12,7 @@ typedef struct q
 }q;
 
 //creating empty queue using q
-void initQueue(q *headOfQ)
+void InitQueue(q *headOfQ)
 {
 	//pointing head to NULL
 	//empty queue
@@ -32,7 +32,7 @@ TCB_t *newItem()
 }
 
 //adds item to the queue
-void addQueue(q *headOfQ, TCB_t *item)
+void AddQueue(q *headOfQ, TCB_t *item)
 {
 	//adds in the start if queue is empty
 	if(headOfQ->head == NULL)
@@ -52,7 +52,7 @@ void addQueue(q *headOfQ, TCB_t *item)
 }
 
 // deletes item from the head and return it
-TCB_t * delQueue(q *headOfQ)
+TCB_t * DeleteQueue(q *headOfQ)
 {
 	//if queue is empty
 	if(headOfQ->head == NULL)

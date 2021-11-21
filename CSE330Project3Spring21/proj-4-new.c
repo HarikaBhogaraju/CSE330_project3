@@ -17,22 +17,22 @@ int numberOfReaders = 0;
 int numberOfWriters = 0;
 
 //both structs to call semaphores
-struct semaphore *forReader;
-struct semaphore *forWriter;
+struct semaphore *readerSem;
+struct semaphore *writerSem;
 
 
 //struct type for semaphore data structure
 typedef struct semaphore
 {
     int value;
-    struct q *qOfTCBs;
+    struct q *s_q;
 } semaphore;
 
 //to initialize semaphores with given value
 void initSem(semaphore *sem, int value)
 {
-    sem->qOfTCBs = (struct q*) malloc(sizeof(struct q));
-    initQueue(sem->qOfTCBs);
+    sem->s_q = (struct q*) malloc(sizeof(struct q));
+    InitQueue(sem->s_q);
     sem->value = value;
 }
 
@@ -53,17 +53,17 @@ void P(semaphore *sem)
         else
         {
             //delete tcb from readyQ
-            tcb = delQueue(ReadyQ);
+            tcb = DeleteQueue(RunQ);
             //add to semaphore queue
-            addQueue(sem->qOfTCBs, tcb);
+            AddQueue(sem->s_q, tcb);
 
             //if head NULL exit
-            if(ReadyQ->head == NULL)
+            if(RunQ->head == NULL)
             {
                 exit(0);
             }
             //swap current node with previous nodes
-            swapcontext(&(sem->qOfTCBs->head->prev->context), &(ReadyQ->head->context));
+            swapcontext(&(sem->s_q->head->prev->context), &(RunQ->head->context));
         }
     }
 }
@@ -76,11 +76,11 @@ void V(semaphore *sem)
     sem->value++;
 
 	//checking if any threads are waiting in semaphore queue
-    if(sem->qOfTCBs->head != NULL)
+    if(sem->s_q->head != NULL)
     {
     	//if yes delete from semaphore queue and add to readyQ
-        tcb = delQueue(sem->qOfTCBs);
-        addQueue(ReadyQ, tcb);
+        tcb = DeleteQueue(sem->s_q);
+        AddQueue(RunQ, tcb);
     }
 }
 
@@ -98,15 +98,15 @@ void reader(int readerID)
 	readerExit(readerID);
 
 	//deleting the thread if from readyQ
-    struct TCB_t *tcb = delQueue(ReadyQ);
+    struct TCB_t *tcb = DeleteQueue(RunQ);
 
 	//if head Null exit
-    if(ReadyQ->head == NULL)
+    if(RunQ->head == NULL)
     {
         exit(0);
     }
     //else swapping context
-    swapcontext(&(tcb->context), &(ReadyQ->head->context));
+    swapcontext(&(tcb->context), &(RunQ->head->context));
 }
 
 //to help print and bdetermine if consumer can consume
@@ -129,15 +129,15 @@ void writer(int writerID)
 	writerExit(writerID);
 
     //deleting the thread if from readyQ
-    struct TCB_t *tcb = delQueue(ReadyQ);
+    struct TCB_t *tcb = DeleteQueue(RunQ);
 
 	//if head Null exit
-    if(ReadyQ->head == NULL)
+    if(RunQ->head == NULL)
     {
         exit(0);
     }
     //else swapping context
-    swapcontext(&(tcb->context), &(ReadyQ->head->context));
+    swapcontext(&(tcb->context), &(RunQ->head->context));
 }
 
 void readerEntry(int ID)
@@ -145,13 +145,13 @@ void readerEntry(int ID)
 	if(writerWaitCount > 0 || writeCount > 0)
 	{
 		readerWaitCount++;
-		P(forReader);
+		P(readerSem);
 		readerWaitCount--;
 	}
 	readCount++;
 	if(readerWaitCount > 0)
 	{
-		V(forReader);
+		V(readerSem);
 	}
 }
 
@@ -160,7 +160,7 @@ void readerExit(int ID)
 	readCount--;
 	if(readCount == 0 && writerWaitCount > 0)
 	{
-		V(forWriter);
+		V(writerSem);
 	}
 }
 
@@ -169,7 +169,7 @@ void writerEntry(int ID)
 	if(readCount > 0 || writeCount > 0 || readerWaitCount > 0 || writerWaitCount > 0)
 	{
 		writerWaitCount++;
-		P(forWriter);
+		P(writerSem);
 		writerWaitCount--;
 	}
 	writeCount++;
@@ -182,12 +182,12 @@ void writerExit(int ID)
 	{
 		for(int k = 0; k < readerWaitCount; k++)
 		{
-			V(forReader);
+			V(readerSem);
 		}
 	}
 	else if(writerWaitCount > 0)
 	{
-		V(forWriter);
+		V(writerSem);
 	}
 }
 
@@ -197,17 +197,17 @@ int main() {
 	scanf("%d,%d",&numberOfReaders, &numberOfWriters);
 
 	//allocating memory for readyQ
-    ReadyQ = (struct q*) malloc(sizeof(struct q));
+    RunQ = (struct q*) malloc(sizeof(struct q));
     //Semaphore for Consumer
-    forReader = (struct semaphore*) malloc(sizeof(struct semaphore));
+    readerSem = (struct semaphore*) malloc(sizeof(struct semaphore));
     //Semaphore for producer
-    forWriter = (struct semaphore*) malloc(sizeof(struct semaphore));
+    writerSem = (struct semaphore*) malloc(sizeof(struct semaphore));
 
-	//initializing ReadyQ
-    initQueue(ReadyQ);
+	//initializing RunQ
+    InitQueue(RunQ);
     //initializing consumer and producer semaphore
-    initSem(forReader, 0);
-    initSem(forWriter, 0);
+    initSem(readerSem, 0);
+    initSem(writerSem, 0);
 
 	int j = 0;
 	//for running till the threads in readyQ
