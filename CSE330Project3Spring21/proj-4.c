@@ -1,10 +1,7 @@
-//including standard libraries
 #include<stdio.h>
 #include<stdlib.h>
-//including threads.h to change access or make queue of TCBs
-#include "threads.h"
+#include "sem.h"
 
-//global variables to help
 
 int i = 0;
 
@@ -16,75 +13,12 @@ int writerWaitCount = 0;
 int numberOfReaders = 0;
 int numberOfWriters = 0;
 
-//both structs to call semaphores
 struct semaphore *readerSem;
 struct semaphore *writerSem;
 
 
-//struct type for semaphore data structure
-typedef struct semaphore
-{
-    int value;
-    struct q *s_q;
-} semaphore;
 
-//to initialize semaphores with given value
-void initSem(semaphore *sem, int value)
-{
-    sem->s_q = (struct q*) malloc(sizeof(struct q));
-    InitQueue(sem->s_q);
-    sem->value = value;
-}
 
-//P semaphore
-void P(semaphore *sem)
-{
-    struct TCB_t *tcb;
-	//checks for all Ids
-    while(1)
-    {
-    	//if there is space in the critical section
-        if(sem->value > 0)
-        {
-        	//decrements accordingly
-            sem->value--;
-            return;
-        }
-        else
-        {
-            //delete tcb from readyQ
-            tcb = DeleteQueue(RunQ);
-            //add to semaphore queue
-            AddQueue(sem->s_q, tcb);
-
-            //if element NULL exit
-            if(RunQ->element == NULL)
-            {
-                exit(0);
-            }
-            //swap current node with previous nodes
-            swapcontext(&(sem->s_q->element->prev->context), &(RunQ->element->context));
-        }
-    }
-}
-
-//V semaphore
-void V(semaphore *sem)
-{
-    struct TCB_t *tcb;
-    //incrementing the value
-    sem->value++;
-
-	//checking if any threads are waiting in semaphore queue
-    if(sem->s_q->element != NULL)
-    {
-    	//if yes delete from semaphore queue and add to readyQ
-        tcb = DeleteQueue(sem->s_q);
-        AddQueue(RunQ, tcb);
-    }
-}
-
-//to help print and determine if producer should produce or wait
 void reader(int readerID)
 {
 
@@ -97,19 +31,17 @@ void reader(int readerID)
 
 	readerExit(readerID);
 
-	//deleting the thread if from readyQ
+
     struct TCB_t *tcb = DeleteQueue(RunQ);
 
-	//if element Null exit
     if(RunQ->element == NULL)
     {
         exit(0);
     }
-    //else swapping context
+
     swapcontext(&(tcb->context), &(RunQ->element->context));
 }
 
-//to help print and bdetermine if consumer can consume
 void writer(int writerID)
 {
 	int help = 0;
@@ -128,15 +60,15 @@ void writer(int writerID)
 
 	writerExit(writerID);
 
-    //deleting the thread if from readyQ
+
     struct TCB_t *tcb = DeleteQueue(RunQ);
 
-	//if element Null exit
+
     if(RunQ->element == NULL)
     {
         exit(0);
     }
-    //else swapping context
+
     swapcontext(&(tcb->context), &(RunQ->element->context));
 }
 
@@ -191,45 +123,43 @@ void writerExit(int ID)
 	}
 }
 
-//main function
+
 int main() {
-	//taking inputs
+
 	scanf("%d,%d",&numberOfReaders, &numberOfWriters);
 
-	//allocating memory for readyQ
     RunQ = (struct q*) malloc(sizeof(struct q));
-    //Semaphore for Consumer
-    readerSem = (struct semaphore*) malloc(sizeof(struct semaphore));
-    //Semaphore for producer
+
+
     writerSem = (struct semaphore*) malloc(sizeof(struct semaphore));
 
-	//initializing RunQ
+
     InitQueue(RunQ);
-    //initializing consumer and producer semaphore
+
     initSem(readerSem, 0);
     initSem(writerSem, 0);
 
 	int j = 0;
-	//for running till the threads in readyQ
+
     int stop = numberOfReaders + numberOfWriters;
     while(j < stop)
     {
-    	//scanning the thread id
+
     	int id;
     	scanf("%d", &id);
 
-    	//if positive
+
        	if(id > 0)
         {
-        	//call producer
+
             start_thread(&reader, id);
         }
         else
         {
-        	//call consumer
+
             start_thread(&writer, id);
         }
-        //incrementing
+
         j++;
     }
     run();
