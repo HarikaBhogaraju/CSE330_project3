@@ -57,13 +57,13 @@ void P(semaphore *sem)
             //add to semaphore queue
             AddQueue(sem->s_q, tcb);
 
-            //if head NULL exit
-            if(RunQ->head == NULL)
+            //if element NULL exit
+            if(RunQ->element == NULL)
             {
                 exit(0);
             }
             //swap current node with previous nodes
-            swapcontext(&(sem->s_q->head->prev->context), &(RunQ->head->context));
+            swapcontext(&(sem->s_q->element->prev->context), &(RunQ->element->context));
         }
     }
 }
@@ -76,7 +76,7 @@ void V(semaphore *sem)
     sem->value++;
 
 	//checking if any threads are waiting in semaphore queue
-    if(sem->s_q->head != NULL)
+    if(sem->s_q->element != NULL)
     {
     	//if yes delete from semaphore queue and add to readyQ
         tcb = DeleteQueue(sem->s_q);
@@ -100,13 +100,13 @@ void reader(int readerID)
 	//deleting the thread if from readyQ
     struct TCB_t *tcb = DeleteQueue(RunQ);
 
-	//if head Null exit
-    if(RunQ->head == NULL)
+	//if element Null exit
+    if(RunQ->element == NULL)
     {
         exit(0);
     }
     //else swapping context
-    swapcontext(&(tcb->context), &(RunQ->head->context));
+    swapcontext(&(tcb->context), &(RunQ->element->context));
 }
 
 //to help print and bdetermine if consumer can consume
@@ -131,13 +131,13 @@ void writer(int writerID)
     //deleting the thread if from readyQ
     struct TCB_t *tcb = DeleteQueue(RunQ);
 
-	//if head Null exit
-    if(RunQ->head == NULL)
+	//if element Null exit
+    if(RunQ->element == NULL)
     {
         exit(0);
     }
     //else swapping context
-    swapcontext(&(tcb->context), &(RunQ->head->context));
+    swapcontext(&(tcb->context), &(RunQ->element->context));
 }
 
 void readerEntry(int ID)
