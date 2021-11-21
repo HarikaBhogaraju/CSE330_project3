@@ -1,22 +1,20 @@
 //Harika Bhogaraju
 //1216938606
+
 #include <ucontext.h>
-#include <stdio.h>
-#include <string.h>
 
-typedef struct TCB_T {
-	struct TCB_T* next;
-	struct TCB_T* prev;
-	ucontext_t	context;
-} TCB_T;
+typedef struct TCB_t {
+     struct TCB_t     *next;
+     struct TCB_t     *prev;
+     ucontext_t      context;
+} TCB_t;
 
-void init_tcb(TCB_T* tcb, void* function, void* stackp, int stack_size, int p1) {
-	memset(tcb, '\0', sizeof(TCB_T));
-	getcontext(&tcb->context);
-
-	// have to get parent context, else snow forms on hell
-	tcb->context.uc_stack.ss_sp = stackp;
-
-	tcb->context.uc_stack.ss_size = (size_t) stack_size;
-	makecontext(&tcb->context, function, 1, p1);// context is now cooked
+void init_TCB (TCB_t *tcb, void *function, void *stackP, int stack_size, int threadId)
+{
+    memset(tcb, '\0', sizeof(TCB_t));       // wash, rinse
+    getcontext(&tcb->context);              // have to get parent context, else snow forms on hell
+    tcb->context.uc_stack.ss_sp = stackP;
+    tcb->context.uc_stack.ss_size = (size_t) stack_size;
+    //changed to accept an extra parameter the threadId
+    makecontext(&tcb->context, function, 1, threadId);// context is now cooked
 }
