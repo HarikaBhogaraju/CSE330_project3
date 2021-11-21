@@ -2,7 +2,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 //including TCB.h to change typeto TCB_t
-#include "TCB.h"
+#include "tcb.h"
 
 //struct type for queue implementation
 typedef struct q
