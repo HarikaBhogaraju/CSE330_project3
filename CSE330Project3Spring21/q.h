@@ -7,16 +7,16 @@
 //struct type for queue implementation
 typedef struct q
 {
-	//pointer to head of queue
-	struct TCB_t *head;
+	//pointer to element of queue
+	struct TCB_t *element;
 }q;
 
 //creating empty queue using q
-void InitQueue(q *headOfQ)
+void InitQueue(q *head)
 {
-	//pointing head to NULL
+	//pointing element to NULL
 	//empty queue
-	headOfQ->head = NULL;
+	head->element = NULL;
 }
 
 //creates a new queue element of type TCB_t and returns it
@@ -32,63 +32,63 @@ TCB_t *newItem()
 }
 
 //adds item to the queue
-void AddQueue(q *headOfQ, TCB_t *item)
+void AddQueue(q *head, TCB_t *item)
 {
 	//adds in the start if queue is empty
-	if(headOfQ->head == NULL)
+	if(head->element == NULL)
 	{
-		headOfQ->head = item;
+		head->element = item;
 		item->next = item;
 		item->prev = item;
 	}
 	else
 	{
 		//adds to the end
-		item->prev = headOfQ->head->prev;
-		item->next = headOfQ->head;
-		headOfQ->head->prev->next = item;
-		headOfQ->head->prev = item;
+		item->prev = head->element->prev;
+		item->next = head->element;
+		head->element->prev->next = item;
+		head->element->prev = item;
 	}
 }
 
-// deletes item from the head and return it
-TCB_t * DeleteQueue(q *headOfQ)
+// deletes item from the element and return it
+TCB_t * DeleteQueue(q *head)
 {
 	//if queue is empty
-	if(headOfQ->head == NULL)
+	if(head->element == NULL)
 	{
 		//return NULL
 		return NULL;
 	}
 	//temp pointer to help delete
-	TCB_t *temp = headOfQ->head;
+	TCB_t *temp = head->element;
 	//if next item and curr item is same
-	if(headOfQ->head->next == headOfQ->head)
+	if(head->element->next == head->element)
 	{
-		headOfQ->head = NULL;
+		head->element = NULL;
 		return temp;
 	}
 	//if not same
 	else
 	{
 		//setting next item prev as current prev
-		headOfQ->head->next->prev = headOfQ->head->prev;
+		head->element->next->prev = head->element->prev;
 		//setting prev item next as current next
-		headOfQ->head->prev->next = headOfQ->head->next;
+		head->element->prev->next = head->element->next;
 		//setting next as curr
-		headOfQ->head = headOfQ->head->next;
-		//setting head next and prev NULL
+		head->element = head->element->next;
+		//setting element next and prev NULL
 		temp->next = temp->prev = NULL;
 		return temp;
 	}
 }
 
-//moves head pointer to the next pointer
-void rotateQ(q *headOfQ)
+//moves element pointer to the next pointer
+void rotateQ(q *head)
 {
 	//checking if queue is not empty and then assigning
-	if(headOfQ->head != NULL)
+	if(head->element != NULL)
 	{
-		headOfQ->head = headOfQ->head->next;
+		head->element = head->element->next;
 	}
 }
