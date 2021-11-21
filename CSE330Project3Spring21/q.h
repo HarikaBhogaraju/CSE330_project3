@@ -5,11 +5,11 @@
 #include "tcb.h"
 
 	struct q{
-		TCB_T* element;
+		TCB_t* element;
 	}q;
 
-	TCB_T* newItem() {
-		TCB_T* item = (TCB_T*)malloc(sizeof(TCB_T));
+	TCB_t* newItem() {
+		TCB_t* item = (TCB_t*)malloc(sizeof(TCB_t));
 		return item;
 	}
 
@@ -19,14 +19,14 @@
 	}
 
 
-	void AddQueue(struct q* head, struct TCB_T* item) {
+	void AddQueue(struct q* head, struct TCB_t* item) {
 		if (head->element == NULL) { //for empty queue
 			head->element = item;
 			head->element->prev = item;
 			head->element->next = item;
     }
 		else {
-			struct TCB_T* last = head->element->prev;
+			struct TCB_t* last = head->element->prev;
 			item->next = head->element;
 			item->prev = last;
 			head->element->prev = item;
@@ -34,8 +34,8 @@
 		}
 	}
 
-	TCB_T* DeleteQueue(struct q* head) {
-		TCB_T* deletedItem = (TCB_T*)malloc(sizeof(TCB_T));
+	TCB_t* DeleteQueue(struct q* head) {
+		TCB_t* deletedItem = (TCB_t*)malloc(sizeof(TCB_t));
 		deletedItem = head->element;
 
 		if (head->element != NULL) { //for empty queue
