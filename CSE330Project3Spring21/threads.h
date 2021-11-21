@@ -1,7 +1,8 @@
+//including q.h
 #include "q.h"
 
 //global variable RunQ of q type
-struct q *RunQ;
+struct q *ReadyQ;
 
 //now accepts an extra parameter threadId
 void start_thread(void (*function)(int), int threadId)
@@ -14,8 +15,8 @@ void start_thread(void (*function)(int), int threadId)
 	item = (TCB_t *)malloc(sizeof(TCB_t));
         // call init_TCB with appropriate arguments
 	init_TCB(item, function, stack, 8192, threadId);
-        // call addQ to add this TCB into the "RunQ" which is a global elementer pointer
-	AddQueue(RunQ, item);
+        // call addQ to add this TCB into the "RunQ" which is a global header pointer
+	addQueue(ReadyQ, item);
   	//end pseudo code
 }
 
@@ -23,15 +24,15 @@ void run()
 {       // real code
 	ucontext_t parent;     // get a place to store the main context, for faking
 	getcontext(&parent);   // magic sauce
-	swapcontext(&parent, &(RunQ->element->context));  // start the first thread
+	swapcontext(&parent, &(ReadyQ->head->context));  // start the first thread
 }
 
 void yield() // similar to run
 {
 	ucontext_t prev;
 	// rotate the run Q;
-	RotateQ(RunQ);
+	rotateQ(ReadyQ);
 	getcontext(&prev);
         // swap the context, from previous thread to the thread pointed to by RunQ
-	swapcontext(&(RunQ->element->prev->context), &(RunQ->element->context));
+	swapcontext(&(ReadyQ->head->prev->context), &(ReadyQ->head->context));
 }
